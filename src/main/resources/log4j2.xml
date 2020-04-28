@@ -1,0 +1,39 @@
+
+<!-- monitorInterval：每个N 秒检查配置文件是否有变化，会重新配置日志 -->
+<configuration monitorInterval="600">
+
+    <properties>
+        <property name="logPath">logs</property>
+        <property name="fileName">testspring.log</property>
+    </properties>
+
+
+    <appenders>
+        <console name="console" target="system_out">
+            <PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %logger:%L - %msg%n"/>
+        </console>
+
+        <rollingFile name="rollingFile" filename="${logPath}/${fileName}"
+                     filepattern="${logPath}/%d{YYYY-MM-dd HHmmss}-${fileName}">
+            <patternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
+            <policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </policies>
+            <!-- 日志个数 -->
+            <defaultRolloverStrategy max="20" />
+        </rollingFile>
+
+
+    </appenders>
+    <loggers>
+        <root level="info">
+            <appenderRef ref="console"/>
+        </root>
+    </loggers>
+    <loggers>
+        <logger name="com.xhc.studyspring" level="info">
+            <appenderRef ref="rollingFile" />
+            <appenderRef ref="console" />
+        </logger>
+    </loggers>
+</configuration>

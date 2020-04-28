@@ -1,0 +1,185 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+
+    <!-- 包含了 context:annotation-config 功能  -->
+    <context:component-scan base-package="com.xhc.studyspring.bean,
+        com.xhc.studyspring.service, com.xhc.studyspring.aop,
+        com.xhc.studyspring.eventlistener"></context:component-scan>
+<!--    <context:annotation-config/>-->
+
+
+    <bean id="tank1" class="com.xhc.studyspring.bean.Tank">
+        <property name="driver">
+            <!-- inner bean 内部类只能在组装外部类时使用，会被容器忽略  -->
+            <bean id="person1" class="com.xhc.studyspring.bean.Person" >
+                <property name="name" value="张三"></property>
+                <property name="age" value="20"></property>
+            </bean>
+        </property>
+        <property name="name" value="黑豹"></property>
+        <property name="health" value="120"></property>
+    </bean>
+
+
+    <bean id="tank2" class="com.xhc.studyspring.bean.Tank">
+        <property name="name" value="虎式"></property>
+        <property name="health" value="100"></property>
+    </bean>
+
+
+    <bean id="tank3" class="com.xhc.studyspring.bean.Tank">
+        <constructor-arg name="name">
+            <value>纸做</value>
+        </constructor-arg>
+        <constructor-arg name="health">
+            <value>20</value>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="collectionTestBean" class="com.xhc.studyspring.bean.CollectionTestBean">
+        <property name="list">
+            <list>
+               <value>中国</value>
+               <value>日本</value>
+               <value>韩国</value>
+               <value>印度</value>
+            </list>
+        </property>
+        <property name="list2">
+            <list>
+                <ref bean="tank1"></ref>
+                <ref bean="tank2"></ref>
+            </list>
+        </property>
+        <property name="set">
+            <set>
+                <value>中国</value>
+                <value>日本</value>
+                <value>韩国</value>
+                <value>印度</value>
+            </set>
+        </property>
+        <property name="map">
+            <map>
+                <entry key="1" value="中国"></entry>
+                <entry key="2" value="日本"></entry>
+                <entry key="3" value="韩国"></entry>
+            </map>
+        </property>
+        <property name="properties">
+            <props>
+                <prop key="1">中国</prop>
+                <prop key="2">日本</prop>
+                <prop key="3">韩国</prop>
+            </props>
+        </property>
+      </bean>
+
+
+    <bean id="book" class="com.xhc.studyspring.bean.Book">
+        <property name="name" value="致富之道"></property>
+
+        <!-- 如果不给book的person赋值，将会抛异常，因为启动了 RequiredAnnotationBeanPostProcessor -->
+        <property name="person">
+            <bean id="person" class="com.xhc.studyspring.bean.Person" >
+                <property name="name" value="小王"></property>
+                <property name="age" value="24"></property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- RequiredAnnotationBeanPostProcessor类会在bean装配完成后检查 @Required的属性是否有值，没有则抛异常BeanInitializationException -->
+    <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+
+
+    <!-- 构造注入先执行、设值注入后执行  -->
+    <bean id="testTank" class="com.xhc.studyspring.bean.Tank">
+        <property name="name" value="设值注入"></property>
+        <constructor-arg name="name">
+            <value>构造注入</value>
+        </constructor-arg>
+        <constructor-arg name="health">
+            <value>200</value>
+        </constructor-arg>
+    </bean>
+
+
+
+
+    <!-- spring 自带AOP ，配置通知、切点、代理  -->
+
+    <!-- 通知 -->
+    <bean id="sayHelloAdvice" class="com.xhc.studyspring.aop.SayHelloAdvice"></bean>
+    <bean id="sayHelloAdvice2" class="com.xhc.studyspring.aop.SayHelloAdvice2"></bean>
+    <bean id="sayHelloAdvice3" class="com.xhc.studyspring.aop.SayHelloAdvice3"></bean>
+
+    <!-- 切点 -->
+    <bean id="sayHelloPoint" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+        <property name="patterns">
+            <list>
+                <value>^.*sayHello$</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 切面 -->
+    <bean id="testXmlCfgAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="sayHelloAdvice"></property>
+        <property name="pointcut" ref="sayHelloPoint"></property>
+    </bean>
+
+    <bean id="testXmlCfgAdvisor2" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="sayHelloAdvice2"></property>
+        <property name="pointcut" ref="sayHelloPoint"></property>
+    </bean>
+
+    <bean id="testXmlCfgAdvisor3" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="sayHelloAdvice3"></property>
+        <property name="pointcut" ref="sayHelloPoint"></property>
+    </bean>
+
+    <!-- 使用代理工厂 产生代理类 -->
+    <bean id="sayHelloServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!-- 被代理的接口-->
+        <property name="proxyInterfaces" value="com.xhc.studyspring.service.SayHelloService"></property>
+        <!-- 基于jdk 实现代理需要有一个接口的实现类 -->
+        <property name="target" ref="sayHelloServiceImpl"></property>
+
+        <!-- 是否使用cglib 代理 -->
+        <property name="proxyTargetClass" value="true"></property>
+
+        <!-- 使用切面  按照list中元素顺序通知 -->
+        <property name="interceptorNames">
+            <list>
+                <value>testXmlCfgAdvisor3</value>
+                <value>testXmlCfgAdvisor2</value>
+                <value>testXmlCfgAdvisor</value>
+            </list>
+        </property>
+    </bean>
+
+
+
+    <!-- 事务，需要spring jdbc -->
+    <!--
+    <tx:annotation-driven />
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>-->
+
+</beans>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+            http://www.springframework.org/schema/mvc  
+            http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd  
+            http://www.springframework.org/schema/context  
+            http://www.springframework.org/schema/context/spring-context-4.0.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd "
+	default-lazy-init="false">
+
+    <!-- 开启mvc -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    <context:component-scan base-package="com.xhc.studyspring.controller, com.xhc.studyspring.service, com.xhc.studyspring.bean, com.xhc.studyspring.eventlistener"></context:component-scan>
+
+    <!-- 由DefaultServletHttpRequestHandler 过滤静态资源 -->
+    <mvc:default-servlet-handler />
+    <!-- 
+        resources 设置springmvc 对静态资源不经过dispathcer servlet处理
+                使用resources 会阻止控制器被调用，需要添加<mvc:annotation-driven/>
+                不使用 resoures 则可以不用<mvc:annotation-driven/>
+        
+        conversion-service : 值转换        
+     -->
+<!--    <mvc:resources location="/css/" mapping="/css/*"/>-->
+<!--    <mvc:resources location="/*.html" mapping="/"/>-->
+
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <!--<bean id="mvcConfig" class="com.xhc.studyspring.configuration.WebMvcConfigurer"></bean>-->
+
+</beans>

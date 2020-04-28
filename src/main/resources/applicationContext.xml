@@ -1,0 +1,39 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+<!--    <import resource="customer.xml"/>-->
+
+
+
+
+    <context:annotation-config/>
+
+    <bean id="person" class="com.xhc.studyspring.bean.Person" init-method="init" destroy-method="cleanup" >
+        <property name="name" value="张三"></property>
+        <property name="age" value="20"></property>
+    </bean>
+    
+    <bean id="tankTigger" class="com.xhc.studyspring.bean.Tank" primary="true">
+        <property name="driver" ref="person"></property>
+        <property name="name" value="虎式"></property>
+        <property name="health" value="130"></property>
+    </bean>
+
+    <bean id="tankPanther" class="com.xhc.studyspring.bean.Tank">
+        <property name="driver" ref="person"></property>
+        <property name="name" value="黑豹"></property>
+        <property name="health" value="120"></property>
+    </bean>
+
+
+
+
+</beans>

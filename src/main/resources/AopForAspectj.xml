@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+
+    <!-- 包含了 context:annotation-config 功能  -->
+    <context:component-scan base-package="com.xhc.studyspring.service,
+    com.xhc.studyspring.aop"></context:component-scan>
+
+
+    <!-- 强制使用cglib代理，依赖 org.aspectj 包  -->
+<!--    <aop:aspectj-autoproxy proxy-target-class="true" />-->
+
+    <!-- 启动支持@Aspect 注解自动代理，依赖 org.aspectj 包 -->
+    <aop:aspectj-autoproxy/>
+
+
+
+    <!-- 需要引用  groupId=org.aspectj artifactId=aspectjweaver  包 -->
+    <aop:config>
+        <aop:aspect ref="aspectSayHiProxy">
+            <aop:pointcut id="pointcut" expression="execution (* com.xhc.studyspring.service.*.hi(..))"/>
+            <aop:before method="before" pointcut-ref="pointcut"/>
+            <aop:after method="after" pointcut-ref="pointcut"/>
+            <aop:around method="around" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+
+    <bean id="aspectSayHiProxy" class="com.xhc.studyspring.aop.AspectSayHiProxy"></bean>
+
+</beans>
