@@ -13,7 +13,7 @@
 		<java.version>1.8</java.version>
 		<spring.version>5.2.4.RELEASE</spring.version>
 		<tomcat.embed.version>8.5.19</tomcat.embed.version>
-		<jackson.version>2.9.6</jackson.version>
+		<jackson.version>2.11.0</jackson.version>
 		<fastjson.version>1.2.67</fastjson.version>
 	</properties>
 
